@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1743383304 source:/home/danny/Desktop/DS2025/Lec04_0331/Complex_V4.cpp
+	"Complex_V4.h"
+
+1743382826 /home/danny/Desktop/DS2025/Lec04_0331/Complex_V4.h
+	<cstdio>
+
