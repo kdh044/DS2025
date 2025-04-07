@@ -2,15 +2,23 @@
 #include <algorithm>
 
 void SparsePoly::addTerm(int coeff, int exp) {
-    if (coeff != 0) {
-        terms.push_back({coeff, exp});
+    if (coeff == 0) return;
+
+    // 이미 같은 차수가 있으면 누적
+    for (auto& term : terms) {
+        if (term.exp == exp) {
+            term.coeff += coeff;
+            return;
+        }
     }
+    terms.push_back({coeff, exp});
 }
 
 void SparsePoly::input() {
     int n;
     std::cout << "항의 개수를 입력하세요: ";
     std::cin >> n;
+
     for (int i = 0; i < n; ++i) {
         int c, e;
         std::cout << i + 1 << "번째 항의 계수와 차수를 입력하세요 (예: 계수 차수): ";
@@ -21,56 +29,49 @@ void SparsePoly::input() {
 
 SparsePoly SparsePoly::add(const SparsePoly& other) {
     SparsePoly result;
-    std::vector<Term> A = terms;
-    std::vector<Term> B = other.terms;
-    std::sort(A.begin(), A.end());
-    std::sort(B.begin(), B.end());
 
-    size_t i = 0, j = 0;
-    while (i < A.size() && j < B.size()) {
-        if (A[i].exp == B[j].exp) {
-            int sum = A[i].coeff + B[j].coeff;
-            if (sum != 0)
-                result.addTerm(sum, A[i].exp);
-            ++i; ++j;
-        } else if (A[i].exp > B[j].exp) {
-            result.addTerm(A[i].coeff, A[i].exp);
-            ++i;
-        } else {
-            result.addTerm(B[j].coeff, B[j].exp);
-            ++j;
-        }
-    }
+    // A 항 복사
+    for (const auto& term : terms)
+        result.addTerm(term.coeff, term.exp);
 
-    while (i < A.size()) result.addTerm(A[i].coeff, A[i].exp), ++i;
-    while (j < B.size()) result.addTerm(B[j].coeff, B[j].exp), ++j;
+    // B 항 더하기
+    for (const auto& term : other.terms)
+        result.addTerm(term.coeff, term.exp);
 
     return result;
 }
 
 void SparsePoly::print(const std::string& name) const {
-    std::cout << "Poly " << name << ": ";
-    for (size_t i = 0; i < terms.size(); ++i) {
-        std::cout << terms[i].coeff << ".0x^" << terms[i].exp;
-        if (i != terms.size() - 1) std::cout << " + ";
+    std::vector<Term> sortedTerms = terms;
+    std::sort(sortedTerms.begin(), sortedTerms.end());
+
+    std::cout << "다항식 " << name << ": ";
+    bool first = true;
+    for (const auto& term : sortedTerms) {
+        if (term.coeff == 0) continue;
+
+        if (!first) std::cout << " + ";
+        std::cout << term.coeff << "x^" << term.exp;
+        first = false;
     }
     std::cout << std::endl;
 }
 
-// ------------------ main ------------------
 int main() {
     SparsePoly A, B;
+
     std::cout << "[다항식 A 입력]" << std::endl;
     A.input();
-    A.print("A");
 
     std::cout << "\n[다항식 B 입력]" << std::endl;
     B.input();
-    B.print("B");
 
     SparsePoly C = A.add(B);
-    std::cout << "\n[결과 다항식 C = A + B]" << std::endl;
-    C.print("C");
+
+    std::cout << "\n[덧셈 결과: A + B]" << std::endl;
+    A.print("A");
+    B.print("B");
+    C.print("A + B");
 
     return 0;
 }
