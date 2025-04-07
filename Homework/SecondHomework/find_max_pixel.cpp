@@ -3,18 +3,19 @@
 using namespace std;
 using namespace cv;
 
-int findMaxPixel(const Mat& img) {
-    double minVal, maxVal;
-    minMaxLoc(img, &minVal, &maxVal);
-    return static_cast<int>(maxVal);
-}
-
 int main() {
-    Mat img = imread("/home/danny/Desktop/DS2025/Homework/SecondHomework/Lenna.png", IMREAD_UNCHANGED);
+    // 이미지 그레이스케일로 불러오기
+    Mat img = imread("Lenna.png", IMREAD_GRAYSCALE);
+
     if (img.empty()) {
         cout << "이미지를 불러올 수 없습니다." << endl;
         return -1;
     }
-    cout << "최대 밝기 값: " << findMaxPixel(img) << endl;
+
+    // 최대 화소 밝기 구하기
+    double minVal, maxVal;
+    minMaxLoc(img, &minVal, &maxVal);
+
+    cout << "최대 화소 밝기값: " << maxVal << endl;
     return 0;
 }
