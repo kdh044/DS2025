@@ -41,3 +41,4 @@ def quick_sort(a_list):
 arr = [5, 8, 4, 9, 1, 6, 2, 7]
 quick_sort(arr)
 print("Quick Sort 결과:", arr)
+    
